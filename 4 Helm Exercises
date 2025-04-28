@@ -1,0 +1,48 @@
+4.1 Conditionals and Loops in Templates
+
+service: enabled: true
+{{ if.Values.service.enabled }} # Configuration {{ end }}
+
+extraEnvVars: 
+- name: ENV_VAR1 value: "value1" 
+- name: ENV_VAR2 value: "value2"
+ 	- name: ENV_VAR3 value: "value3"
+4.2 Named Templates (_helpers.tpl)
+
+containers:
+ 	- name: my-app
+ image: "my-app:latest" 
+env: {{- range $name, $value :=.Values.extraEnvVars }} 
+- name: {{ $name }} value: {{ $value | quote }} {{- end }}
+
+{{ define "my-app.fullname" }} 
+{{ printf "%s-%s".Release.Name.Chart.Name | trunc 63 | trimSuffix "-" }} {{ end }}
+
+apiVersion: v1 kind: Deployment metadata: name: {{ include "my-app.fullname". }} spec: selector: matchLabels: app: my-app
+
+4.3 Chart Dependencies
+
+dependencies: - name: postgresql repository: https://charts.bitnami.com/bitnami version: <version_number>
+
+postgresql: 
+postgresUsername: <your_postgres_username
+postgresPassword: <your_postgres_password>  
+
+I would use preinstall hook before deployment to ensure that the database schema is updated.
+
+
+
+
+
+4.4 Helm Hooks
+Post
+apiVersion: v1 
+kind: Pod 
+metadata: 
+name: notify-slack 
+annotations: "helm.sh/hook": post-install 
+spec: 
+containers: - name: notifier 
+image: curlimages/curl command: ["sh", "-c", "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Deployment successful!\"}' 
+https://slack.com/webhook"] 
+restartPolicy: Never
