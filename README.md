@@ -1,3 +1,3 @@
 # exercise
 
-As the recruiter did not give me the source code to edit, I had to reproduce as much as I can using word document.
+As I was not given the source code or editor by the recruiter , I had to reproduce as much as I can using word document.
