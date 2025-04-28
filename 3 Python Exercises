@@ -1,0 +1,51 @@
+3.1 Simple API with Flask/FastAPI
+
+app = Flask(__name__)
+@app.route('/posts', methods=['GET']) 
+def get_posts(): 
+return jsonify(posts) 
+201 if __name__ == '__main__': app.run(debug=True)
+3.2 Data Processing with Dictionaries/Lists
+def organize_names_by_role(persons): 
+roleDict = {} 
+for person in persons:
+ 	role = person.get('role') 
+name = person.get('name') 
+roleDict.setDefault(role,default=None)
+ return roleDict[role].append(name) 
+3.3 Interacting with an External API
+
+def fetch_api_data(url):
+	try:
+		response = requests.get(url)
+response.raise_for_status()
+return response.json()
+	except requests.exceptions.HTTPError as http_err:
+		print(http_err)
+	except requests.exceptions.ConnectionError as conn_err:
+		print(conn_err)
+	except requests.exceptions.RequestException as err:
+		print(err)
+
+data = fetch_api_data(url)
+	if data:
+		print(data)
+	else:
+		print(None)
+3.4 Database Interaction (Conceptual/SQLAlchemy)
+First, I would create a connection to the db.
+Next, I would create a model, which is similar in function as an entity in java that maps to each database table that  needs to be queried.
+Object Relational Mapping module has a declarative_base() method to create model classes to be the mapping between the entity and the database table.
+
+Base = declarative_base() 
+class User(Base): __tablename__ = 'users' 
+id = Column(Integer, primary_key=True) 
+name = Column(String)
+ price = Column(Integer)
+
+To query the db:
+Session = sessionmaker(bind = engine)
+Session = Session()
+filtered_users = session.query(User).filter(User.price> 100).all()
+for user in filtered_users:
+print(user.name,user.price)
