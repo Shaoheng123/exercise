@@ -1,0 +1,74 @@
+Map<String, Double> productCategoryMap = productList.stream().collect(Collectors.groupingBy(Product::getCategory),averagingDouble(Product::getPrice));
+Class Payment{
+  double payment;
+  String currency;
+  public Payment (double amount, String currency){
+  this.amount = amount;
+  this. currency = currency;
+}
+  public String processPayment(String USD, Currency targetCurrency) {
+    Payment payment = new Payment(100,USD);
+    If(targetCurrency instanceOf USD){
+      return new USD.name();
+  }
+    If(targetCurrency instanceOf EUR){
+      return new EUR.name();
+    }
+    If(targetCurrency instanceOf GBP){
+      return new GBP.name();
+    }
+    return “Not an eligible currency.”;
+  }
+  public int  getAmount(){
+    return amount;
+  }
+  Public int getCurrency() {
+    return currency;
+  }
+}
+1.2 Records & Pattern Matching:
+public sealed interface Currency permits USD, EUR, GBP {
+  String name(String currency);
+}
+public record USD implements Currency{
+  @Override
+  public String name(String currency ){
+  return “USD”;
+  }
+}
+public record EUR implements Currency{
+  @Override
+  public String name(String currency ){
+  return “EUR”;
+  }
+}
+public record GBP implements Currency {
+@Override
+public String name(String currency ){
+return “GBP”;
+}
+}
+1.3
+public class FetchDataExample {
+
+    public static CompletableFuture<String> fetchUserData(long userId) {
+        return CompletableFuture.supplyAsync(() -> {
+
+if (userId < 0) {
+                throw new Exception("Invalid user ID: " + userId);
+            }
+            return userId;
+        });
+    }
+1.3) Concurrency & CompletableFuture
+    public static CompletableFuture<String> fetchAndCombineUserData(long userId1, long userId2) {
+        CompletableFuture<String> future1 = fetchUserData(userId1)
+            .exceptionally(e -> "Error fetching user " + userId1 + ": " + e.getMessage());
+
+        CompletableFuture<String> future2 = fetchUserDat(userId2)
+            .exceptionally(e -> "Error fetching user " + userId2 + ": " + e.getMessage());
+
+        return future1.thenCombine(future2, (result1, result2) ->
+            "Data1: [" + result1 + "], Data2: [" + result2 + "]"
+        );
+    }
