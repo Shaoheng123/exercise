@@ -1,0 +1,126 @@
+2.1 REST Endpoint with Path/Query Params & CDI
+
+public interface GreetingService {
+    public String greet(String name, String suffix);
+}
+
+public class GreetingServiceImpl implements GreetingService() {
+public string greet(String name, String suffix) {
+	if(name.isBlank()){
+		return “”;
+}
+If(suffix.isBlank()){
+	suffix = “”;
+}
+return “Hello” + name + suffix
+}
+@Path("/greet/{name}")
+@Produces(MediaType.TEXT_PLAIN)
+public class GreetingController {
+
+    @Inject
+    private GreetingService greetingService;
+
+    @GET
+    @Path("/{name}")
+    public String greet(
+            @PathParam("name") String name,
+            @QueryParam("suffix") String suffix) {
+        return greetingService.greet(name, suffix);
+    }
+}
+2.2 Persistance with Panache
+@Entity
+public class PersonEntity extends PanacheEntity {
+public String name;
+public Date birthdate;
+}
+
+public interface PersonService {
+List<Person> getAllPerson();
+   	 Person createPerson(Person person, Date birthdate);
+
+}
+
+@ApplicationScoped
+public class PersonServiceImpl implements PersonService {
+   
+    @Inject
+    PersonRepository personRepository; 
+
+    @Override
+    public List<Person> getAllPersons() {
+        return personRepository.findAll();
+    }
+
+    @Override
+    public Person createPerson(Person person) {
+        return personRepository.save(person);
+    }
+
+   
+
+    @Override
+    public Person findPersonByName(Person person) {
+        Optional<Person> person = personRepository.findByName(person);
+	person.ifPresentOrElse(
+	p-> return “p.name”
+	()-> return "Personn not found”
+)
+    }
+
+@ApplicationScoped
+public class PersonRepository implements PanacheRepository<Person,Long> {
+	public List<Person> findByName () {
+	return Optional.ofNullable(find("name", name).firstResult());}
+}
+}
+@Path(“/”)
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType. APPLICATION_JSON)
+public class PersonController {
+
+@Post(“/persons”)
+public List<Person> {
+Person person = new Person(“john”,”27/0”);
+person.persist();
+}
+@GET(“/persons”)
+public List<Person> findAll() {
+	return Person.listAll();
+}
+@GET(“/persons/search/{name}”)
+public List<Person> findByName () {
+	return Optional.ofNullable(find("name", name).firstResult());}
+}
+1)	Import the driver using Maven/Gradle build tool
+
+src/main/resources/application.properties file:
+  quarkus.datasource.db-kind=h2 quarkus.datasource.jdbc.url=jdbc:h2:mem:test;DB_CLOSE_DELAY=-1 quarkus.datasource.username=admin 
+quarkus.datasource.password=sa 
+quarkus.hibernate-orm.database.generation=update
+
+
+
+
+2.3 MicroProfile Health Check
+@Liveness 
+@ApplicationScoped
+public class MyLivenessCheck implements HealthCheck { 
+@Override 
+public HealthCheckResponse call() { 
+HealthCheckResponse.up("Service is connected"); 
+} 
+}
+
+ApplicationScoped 
+@Readiness
+ public class DatabaseHealthCheck implements HealthCheck { 
+@Override 
+public HealthCheckResponse call() { 
+try (Connection connection = DriverManager.getConnection("jdbc:h2”+request.getContextPath://localhost:8082/mydb", config.getuser(),config.getpassword())) { 
+return HealthCheckResponse.up("Database connection is UP"); 
+} catch (SQLException e) {
+ return HealthCheckResponse.down("Database connection is DOWN: " + e.getMessage()); }
+ }
+ }
